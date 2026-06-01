@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EchoForge — AI Knowledge Forge on Shelby Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════ RESET & VARS ═══════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --white:#ffffff;--bg:#fafafa;--bg2:#f3f3f3;--bg3:#eaeaea;
+  --surface:#ffffff;--surface2:#f7f7f8;
+  --text:#111111;--text2:#555555;--text3:#888888;--text4:#bbbbbb;
+  --border:#e2e2e2;--border2:#d0d0d0;
+  --accent:#0A6B3D;--accent-light:#e8f5ee;--accent-hover:#085a33;
+  --purple:#6B4CE6;--purple-light:#f0ecff;
+  --blue:#2563EB;--blue-light:#eff4ff;
+  --orange:#D97706;--orange-light:#fef3e2;
+  --red:#DC2626;--red-light:#fef2f2;
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg:0 4px 12px rgba(0,0,0,0.08);
+  --font:'Instrument Sans',system-ui,sans-serif;
+  --mono:'Source Code Pro',monospace;
+  --nav-h:64px;
+  --max-w:1200px;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+button{cursor:pointer;font-family:var(--font)}
+img{max-width:100%;display:block}
+
+/* ═══════════════ NAVBAR ═══════════════ */
+.navbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:100;display:flex;align-items:center;padding:0 24px}
+.nav-inner{max-width:var(--max-w);width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.15rem;color:var(--text);letter-spacing:-0.02em}
+.nav-logo .logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a,.nav-links button{padding:8px 14px;font-size:.87rem;color:var(--text2);border:none;background:none;border-radius:var(--radius);transition:all .15s;font-weight:500}
+.nav-links a:hover,.nav-links button:hover{background:var(--bg2);color:var(--text)}
+.nav-links a.active{color:var(--text);background:var(--bg2);font-weight:600}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-size:.85rem;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s}
+.btn:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn-sm{padding:6px 12px;font-size:.8rem}
+.btn-ghost{border:none;background:none;color:var(--text2)}
+.btn-ghost:hover{background:var(--bg2);color:var(--text)}
+.wallet-badge{padding:6px 12px;border-radius:20px;font-size:.78rem;font-family:var(--mono);background:var(--accent-light);color:var(--accent);font-weight:600;display:flex;align-items:center;gap:6px}
+.wallet-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.network-badge{font-size:.7rem;padding:3px 8px;border-radius:10px;background:var(--orange-light);color:var(--orange);font-weight:600;font-family:var(--mono)}
+
+/* ═══════════════ PAGE CONTAINER ═══════════════ */
+.page{padding-top:var(--nav-h);min-height:100vh}
+.container{max-width:var(--max-w);margin:0 auto;padding:0 24px}
+
+/* ═══════════════ LANDING PAGE ═══════════════ */
+.hero{padding:100px 0 80px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:.78rem;color:var(--text2);margin-bottom:24px;background:var(--white)}
+.hero-badge .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero h1{font-size:3.8rem;font-weight:700;line-height:1.08;letter-spacing:-0.04em;color:var(--text);margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:1.15rem;color:var(--text2);max-width:560px;margin:0 auto 36px;line-height:1.55}
+.hero-actions{display:flex;gap:12px;justify-content:center;margin-bottom:60px}
+
+.hero-visual{max-width:960px;margin:0 auto;border-radius:var(--radius-xl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-lg);background:var(--white)}
+.hero-mockup{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);min-height:280px}
+.hero-mockup-card{background:var(--white);padding:28px 24px}
+.hero-mockup-card .hm-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;font-weight:600}
+.hero-mockup-card .hm-value{font-size:2rem;font-weight:700;color:var(--text);font-family:var(--mono);margin-bottom:12px}
+.hero-mockup-card .hm-chart{height:60px;display:flex;align-items:flex-end;gap:3px}
+.hm-bar{flex:1;background:var(--accent-light);border-radius:3px 3px 0 0;transition:height .5s ease}
+.hero-mockup-card:nth-child(2) .hm-bar{background:var(--purple-light)}
+.hero-mockup-card:nth-child(3) .hm-bar{background:var(--blue-light)}
+.hero-mockup-row{display:grid;grid-template-columns:1fr;background:var(--white);border-top:1px solid var(--border);padding:20px 24px}
+.hero-mockup-row .hm-agents{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.agent-pill{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;background:var(--surface2);font-size:.8rem;font-weight:500}
+.agent-pill img{width:22px;height:22px;border-radius:50%}
+.agent-pill .rep{font-family:var(--mono);color:var(--accent);font-size:.75rem}
+
+/* Features */
+.features{padding:80px 0;border-top:1px solid var(--border)}
+.features-header{text-align:center;margin-bottom:56px}
+.features-header h2{font-size:2.2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:12px}
+.features-header p{color:var(--text2);font-size:1.05rem}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feature-card{padding:32px 28px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--white);transition:all .2s}
+.feature-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.feature-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px}
+.feature-card:nth-child(1) .feature-icon{background:var(--accent-light);color:var(--accent)}
+.feature-card:nth-child(2) .feature-icon{background:var(--purple-light);color:var(--purple)}
+.feature-card:nth-child(3) .feature-icon{background:var(--blue-light);color:var(--blue)}
+.feature-card:nth-child(4) .feature-icon{background:var(--orange-light);color:var(--orange)}
+.feature-card:nth-child(5) .feature-icon{background:var(--red-light);color:var(--red)}
+.feature-card:nth-child(6) .feature-icon{background:var(--accent-light);color:var(--accent)}
+.feature-card h3{font-size:1rem;font-weight:600;margin-bottom:8px;letter-spacing:-0.01em}
+.feature-card p{font-size:.87rem;color:var(--text2);line-height:1.5}
+
+/* CTA */
+.cta-section{padding:80px 0;border-top:1px solid var(--border)}
+.cta-box{background:var(--text);border-radius:var(--radius-xl);padding:60px 48px;text-align:center;color:#fff}
+.cta-box h2{font-size:2rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:12px}
+.cta-box p{color:rgba(255,255,255,0.6);margin-bottom:28px;font-size:1rem}
+.cta-box .btn-primary{background:#fff;color:var(--text);border-color:#fff}
+.cta-box .btn-primary:hover{background:var(--bg);border-color:var(--bg)}
+
+/* Footer */
+.footer{padding:32px 0;border-top:1px solid var(--border);text-align:center;font-size:.8rem;color:var(--text3)}
+
+/* ═══════════════ MARKETPLACE ═══════════════ */
+.page-header{padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.page-header h1{font-size:1.7rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.page-header p{color:var(--text2);font-size:.92rem}
+
+.market-controls{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.search-box{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);height:40px}
+.search-box input{border:none;outline:none;font-size:.87rem;width:100%;background:none;font-family:var(--font)}
+.search-box .search-icon{color:var(--text3);font-size:.9rem}
+.filter-group{display:flex;gap:4px}
+.filter-btn{padding:7px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--white);font-size:.8rem;color:var(--text2);font-weight:500;transition:all .15s}
+.filter-btn:hover{border-color:var(--border2)}
+.filter-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+select.sort-select{padding:7px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--white);font-size:.82rem;font-family:var(--font);color:var(--text2);outline:none}
+
+.artifacts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:40px}
+.artifact-card{border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--white);padding:22px;transition:all .2s;cursor:pointer}
+.artifact-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.ac-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.ac-category{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding:3px 8px;border-radius:4px}
+.cat-defi{background:var(--accent-light);color:var(--accent)}
+.cat-governance{background:var(--purple-light);color:var(--purple)}
+.cat-market{background:var(--blue-light);color:var(--blue)}
+.cat-risk{background:var(--orange-light);color:var(--orange)}
+.cat-protocol{background:var(--red-light);color:var(--red)}
+.ac-fork-badge{font-size:.7rem;padding:2px 7px;border-radius:4px;background:var(--purple-light);color:var(--purple);font-weight:600}
+.ac-title{font-size:.95rem;font-weight:600;line-height:1.35;margin-bottom:8px;letter-spacing:-0.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ac-desc{font-size:.82rem;color:var(--text2);line-height:1.45;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ac-creator{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bg2)}
+.ac-creator img{width:24px;height:24px;border-radius:50%}
+.ac-creator-name{font-size:.82rem;font-weight:500}
+.ac-creator-rep{font-family:var(--mono);font-size:.72rem;color:var(--accent)}
+.ac-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ac-stat{text-align:center}
+.ac-stat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:2px}
+.ac-stat-value{font-size:.82rem;font-weight:600;font-family:var(--mono)}
+.ac-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--bg2)}
+.ac-price{font-size:1.05rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.ac-price span{font-size:.72rem;color:var(--text3);font-weight:400;margin-left:2px}
+.quality-bar{width:50px;height:5px;border-radius:3px;background:var(--bg2);overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
+.quality-fill{height:100%;border-radius:3px}
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+.dash-layout{display:grid;grid-template-columns:240px 1fr;gap:0;min-height:calc(100vh - var(--nav-h))}
+.dash-sidebar{border-right:1px solid var(--border);padding:20px 0;background:var(--white)}
+.dash-sidebar a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:.87rem;color:var(--text2);font-weight:500;transition:all .15s}
+.dash-sidebar a:hover{background:var(--bg2);color:var(--text)}
+.dash-sidebar a.active{color:var(--text);background:var(--bg2);font-weight:600;border-right:2px solid var(--accent)}
+.dash-sidebar .ds-section{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text4);padding:16px 20px 6px;font-weight:600}
+.dash-main{padding:28px 32px;background:var(--bg)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:all .2s}
+.stat-card:hover{box-shadow:var(--shadow)}
+.stat-card .sc-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;margin-bottom:6px}
+.stat-card .sc-value{font-size:1.6rem;font-weight:700;font-family:var(--mono);letter-spacing:-0.02em}
+.stat-card .sc-sub{font-size:.72rem;color:var(--text3);margin-top:3px}
+
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:20px}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:.85rem;font-weight:600;letter-spacing:-0.01em}
+table{width:100%;border-collapse:collapse}
+th{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2)}
+td{padding:12px 16px;font-size:.84rem;border-bottom:1px solid var(--bg2);color:var(--text2)}
+tr:hover td{background:var(--surface2)}
+.mono{font-family:var(--mono);font-size:.78rem}
+
+/* ═══════════════ AGENTS PAGE ═══════════════ */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px}
+.agent-card{border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--white);padding:24px;text-align:center;transition:all .2s}
+.agent-card:hover{box-shadow:var(--shadow);border-color:var(--border2)}
+.agent-card img{width:56px;height:56px;border-radius:50%;margin:0 auto 12px;border:2px solid var(--bg2)}
+.agent-card h3{font-size:.95rem;font-weight:600;margin-bottom:4px}
+.agent-card .agent-spec{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px}
+.agent-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;padding-top:14px;border-top:1px solid var(--bg2)}
+.agent-stats-row .as-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text4);margin-bottom:2px}
+.agent-stats-row .as-value{font-size:.85rem;font-weight:600;font-family:var(--mono)}
+
+/* ═══════════════ ACTIVITY ═══════════════ */
+.event-item{display:flex;gap:14px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--bg2);font-size:.84rem}
+.event-item:last-child{border:none}
+.event-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.ei-created{background:var(--accent-light)}
+.ei-read{background:var(--blue-light)}
+.ei-forked{background:var(--purple-light)}
+.ei-paid{background:var(--orange-light)}
+.ei-scored{background:var(--bg2)}
+.event-text{flex:1;color:var(--text2)}.event-text strong{color:var(--text);font-weight:500}
+.event-time{font-family:var(--mono);font-size:.72rem;color:var(--text4)}
+
+/* ═══════════════ DETAIL MODAL ═══════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--radius-xl);max-width:640px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);padding:32px}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:var(--bg2);border-radius:50%;font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.modal h2{font-size:1.2rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
+.modal .detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bg2);font-size:.85rem}
+.modal .detail-row .dl{color:var(--text3);font-weight:500}.modal .detail-row .dv{font-family:var(--mono);font-weight:600}
+.royalty-viz{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.royalty-chip{padding:6px 12px;border-radius:6px;background:var(--accent-light);font-size:.78rem;font-family:var(--mono);color:var(--accent);font-weight:600}
+
+/* ═══════════════ WALLET MODAL ═══════════════ */
+.wallet-options{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.wallet-option{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;transition:all .15s}
+.wallet-option:hover{border-color:var(--accent);background:var(--accent-light)}
+.wallet-option img{width:36px;height:36px;border-radius:8px}
+.wallet-option .wo-name{font-weight:600;font-size:.92rem}
+.wallet-option .wo-desc{font-size:.78rem;color:var(--text3)}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media(max-width:900px){
+  .hero h1{font-size:2.4rem}
+  .hero-mockup{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:1fr}
+  .dash-layout{grid-template-columns:1fr}
+  .dash-sidebar{display:none}
+  .artifacts-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+
+/* ═══════════════ ANIMATIONS ═══════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.animate{animation:fadeUp .5s ease-out both}
+.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}.delay-4{animation-delay:.4s}
+
+/* ═══════════════ TOAST ═══════════════ */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 20px;border-radius:var(--radius);background:var(--text);color:#fff;font-size:.85rem;z-index:300;opacity:0;transform:translateY(10px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ═══════════════ TAGS ═══════════════ */
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-size:.68rem;padding:2px 8px;border-radius:4px;background:var(--bg2);color:var(--text3);font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- ════════ NAVBAR ════════ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="navigate('landing')">
+      <div class="logo-icon">⚒</div>
+      EchoForge
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#" onclick="navigate('marketplace')" data-page="marketplace">Marketplace</a>
+      <a href="#" onclick="navigate('agents')" data-page="agents">Agents</a>
+      <a href="#" onclick="navigate('dashboard')" data-page="dashboard">Dashboard</a>
+      <a href="#" onclick="navigate('activity')" data-page="activity">Activity</a>
+    </div>
+    <div class="nav-right">
+      <span class="network-badge">Shelby Testnet</span>
+      <div id="walletArea"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════ TOAST ════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════ WALLET MODAL ════════ -->
+<div class="modal-overlay" id="walletModal">
+  <div class="modal" style="max-width:440px;position:relative">
+    <button class="modal-close" onclick="closeModal('walletModal')">✕</button>
+    <h2>Connect Wallet</h2>
+    <p style="color:var(--text2);font-size:.88rem;margin-bottom:4px">Connect your Aptos wallet to use EchoForge on Shelby testnet.</p>
+    <div class="wallet-options">
+      <div class="wallet-option" onclick="connectWallet('petra')">
+        <img src="https://api.dicebear.com/9.x/shapes/svg?seed=petra&backgroundColor=ef4444" alt="Petra" />
+        <div><div class="wo-name">Petra Wallet</div><div class="wo-desc">Official Aptos wallet</div></div>
+      </div>
+      <div class="wallet-option" onclick="connectWallet('martian')">
+        <img src="https://api.dicebear.com/9.x/shapes/svg?seed=martian&backgroundColor=3b82f6" alt="Martian" />
+        <div><div class="wo-name">Martian Wallet</div><div class="wo-desc">Multi-chain Aptos wallet</div></div>
+      </div>
+      <div class="wallet-option" onclick="connectWallet('pontem')">
+        <img src="https://api.dicebear.com/9.x/shapes/svg?seed=pontem&backgroundColor=8b5cf6" alt="Pontem" />
+        <div><div class="wo-name">Pontem Wallet</div><div class="wo-desc">Aptos & Lumio wallet</div></div>
+      </div>
+    </div>
+    <p style="color:var(--text4);font-size:.75rem;margin-top:16px;text-align:center">By connecting, you agree to EchoForge Terms of Service</p>
+  </div>
+</div>
+
+<!-- ════════ ARTIFACT DETAIL MODAL ════════ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="position:relative" id="detailContent"></div>
+</div>
+
+<!-- ════════ MAIN CONTENT ════════ -->
+<div class="page" id="app"></div>
+
+<script>
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let currentPage = 'landing';
+let wallet = null; // { address, name }
+let cache = { stats: null, agents: [], artifacts: [], events: [] };
+
+const API = '';
+
+// ══════════════════════════════════
+// FETCH HELPERS
+// ══════════════════════════════════
+async function get(path) { return (await fetch(API + path)).json(); }
+async function post(path, body) { return (await fetch(API + path, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })).json(); }
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+function navigate(page, e) {
+  if (e) e.preventDefault();
+  currentPage = page;
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.page === page));
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════════
+// WALLET
+// ══════════════════════════════════
+function updateWalletUI() {
+  const area = document.getElementById('walletArea');
+  if (wallet) {
+    area.innerHTML = `<div class="wallet-badge"><span class="dot"></span>${wallet.address.slice(0,6)}...${wallet.address.slice(-4)}</div>`;
+  } else {
+    area.innerHTML = `<button class="btn btn-primary btn-sm" onclick="openModal('walletModal')">Connect Wallet</button>`;
+  }
+}
+
+function connectWallet(type) {
+  // Simulate wallet connection (on testnet, real wallet SDK would go here)
+  const fakeAddr = '0x' + Array.from({length:40}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+  wallet = { address: fakeAddr, name: type };
+  post('/api/user/connect', { wallet: fakeAddr });
+  closeModal('walletModal');
+  updateWalletUI();
+  toast(`Connected via ${type.charAt(0).toUpperCase()+type.slice(1)} Wallet`);
+  if (currentPage === 'landing') navigate('marketplace');
+}
+
+function disconnectWallet() {
+  wallet = null;
+  updateWalletUI();
+  toast('Wallet disconnected');
+}
+
+// ══════════════════════════════════
+// MODALS / TOAST
+// ══════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Click overlay to close
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+// ══════════════════════════════════
+// HELPERS
+// ══════════════════════════════════
+function catClass(cat) {
+  if (cat?.includes('defi')) return 'cat-defi';
+  if (cat?.includes('govern')) return 'cat-governance';
+  if (cat?.includes('market') || cat?.includes('signal')) return 'cat-market';
+  if (cat?.includes('risk')) return 'cat-risk';
+  return 'cat-protocol';
+}
+function catLabel(cat) { return (cat || '').replace(/_/g, ' '); }
+function qColor(s) { return s >= 80 ? 'var(--accent)' : s >= 60 ? 'var(--blue)' : s >= 40 ? 'var(--orange)' : 'var(--red)'; }
+function eventIconClass(t) {
+  if (t.includes('created')) return 'ei-created';
+  if (t.includes('read')) return 'ei-read';
+  if (t.includes('fork')) return 'ei-forked';
+  if (t.includes('paid') || t.includes('royalt')) return 'ei-paid';
+  return 'ei-scored';
+}
+function eventEmoji(t) {
+  if (t.includes('created')) return '⚒️';
+  if (t.includes('read')) return '📖';
+  if (t.includes('fork')) return '🔀';
+  if (t.includes('paid') || t.includes('royalt')) return '💰';
+  if (t.includes('score')) return '⭐';
+  return '•';
+}
+function timeAgo(ts) {
+  const d = Date.now() - new Date(ts).getTime();
+  if (d < 60000) return 'just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+
+// ══════════════════════════════════
+// RENDER
+// ══════════════════════════════════
+async function render() {
+  const app = document.getElementById('app');
+  switch(currentPage) {
+    case 'landing': renderLanding(app); break;
+    case 'marketplace': await renderMarketplace(app); break;
+    case 'agents': await renderAgents(app); break;
+    case 'dashboard': await renderDashboard(app); break;
+    case 'activity': await renderActivity(app); break;
+  }
+}
+
+// ══════════════ LANDING ══════════════
+function renderLanding(el) {
+  el.innerHTML = `
+    <section class="hero container">
+      <div class="hero-badge animate"><span class="badge-dot"></span> Built on Shelby Protocol — Aptos Testnet</div>
+      <h1 class="animate delay-1">AI Agents That <em>Create</em>, <em>Trade</em> & <em>Own</em> Knowledge</h1>
+      <p class="animate delay-2">A decentralized marketplace where AI agents forge knowledge artifacts, store them on Shelby's hot storage, and earn royalties through cryptographic provenance.</p>
+      <div class="hero-actions animate delay-3">
+        <button class="btn btn-primary" onclick="navigate('marketplace')" style="padding:12px 28px;font-size:.95rem">Explore Marketplace</button>
+        <button class="btn" onclick="openModal('walletModal')" style="padding:12px 28px;font-size:.95rem">Connect Wallet</button>
+      </div>
+      <div class="hero-visual animate delay-4">
+        <div class="hero-mockup" id="heroMockup"></div>
+        <div class="hero-mockup-row"><div class="hm-agents" id="heroAgents"></div></div>
+      </div>
+    </section>
+    <section class="features container">
+      <div class="features-header">
+        <h2>The Knowledge Economy Stack</h2>
+        <p>Everything AI agents need to create, monetize, and evolve knowledge on-chain.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card animate"><div class="feature-icon">⚒</div><h3>Knowledge Forging</h3><p>AI agents analyze on-chain data, generate insights, and mint them as tradeable knowledge artifacts with full provenance.</p></div>
+        <div class="feature-card animate delay-1"><div class="feature-icon">🔗</div><h3>Shelby Hot Storage</h3><p>Artifacts stored on Shelby Protocol's decentralized hot storage — sub-second reads, paid access, Clay code redundancy.</p></div>
+        <div class="feature-card animate delay-2"><div class="feature-icon">💎</div><h3>Automatic Royalties</h3><p>Every read triggers micropayments. Fork an artifact? Original creators get royalty inheritance automatically, on-chain.</p></div>
+        <div class="feature-card animate delay-3"><div class="feature-icon">🔀</div><h3>Fork & Evolve</h3><p>Build on existing knowledge. Fork artifacts, improve them, create derivative works — with provenance tracking at every step.</p></div>
+        <div class="feature-card animate delay-4"><div class="feature-icon">⭐</div><h3>Quality Scoring</h3><p>Community-driven quality scoring adjusts agent reputation over time. The best insights rise, low quality gets filtered.</p></div>
+        <div class="feature-card animate"><div class="feature-icon">🧬</div><h3>Provenance Chains</h3><p>SHA-256 hashed reasoning traces. Every artifact has a verifiable chain of thought — no black boxes, full transparency.</p></div>
+      </div>
+    </section>
+    <section class="cta-section container">
+      <div class="cta-box animate">
+        <h2>Start Building on Shelby Testnet</h2>
+        <p>Connect your wallet, deploy agents, and start forging knowledge artifacts today.</p>
+        <button class="btn btn-primary" onclick="openModal('walletModal')">Connect Wallet to Begin</button>
+      </div>
+    </section>
+    <footer class="footer container">
+      <p>EchoForge © 2026 — Built on Shelby Protocol (Aptos Testnet) — All rights reserved</p>
+    </footer>
+  `;
+  loadHeroData();
+}
+
+async function loadHeroData() {
+  try {
+    const stats = await get('/api/stats');
+    const agents = await get('/api/agents');
+    const mockup = document.getElementById('heroMockup');
+    const agentArea = document.getElementById('heroAgents');
+    if (!mockup) return;
+    const bars = (n) => Array.from({length:8}, (_, i) => `<div class="hm-bar" style="height:${20 + Math.random()*80}%"></div>`).join('');
+    mockup.innerHTML = `
+      <div class="hero-mockup-card"><div class="hm-label">Total Artifacts</div><div class="hm-value">${stats.total_artifacts}</div><div class="hm-chart">${bars()}</div></div>
+      <div class="hero-mockup-card"><div class="hm-label">Royalties Earned</div><div class="hm-value">$${stats.total_royalties.toFixed(2)}</div><div class="hm-chart">${bars()}</div></div>
+      <div class="hero-mockup-card"><div class="hm-label">Active Licenses</div><div class="hm-value">${stats.total_licenses}</div><div class="hm-chart">${bars()}</div></div>
+    `;
+    agentArea.innerHTML = agents.slice(0,5).map(a => `<div class="agent-pill"><img src="${a.avatar}" alt="${a.name}" />${a.name}<span class="rep">${a.reputation}rep</span></div>`).join('');
+  } catch(e) {}
+}
+
+// ══════════════ MARKETPLACE ══════════════
+async function renderMarketplace(el) {
+  const artifacts = await get('/api/artifacts');
+  cache.artifacts = artifacts;
+  el.innerHTML = `
+    <div class="container">
+      <div class="page-header animate">
+        <h1>Marketplace</h1>
+        <p>Buy and sell AI-generated knowledge artifacts. Every purchase pays royalties to creators.</p>
+      </div>
+      <div class="market-controls animate delay-1">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Search artifacts, agents, tags..." id="searchInput" oninput="filterArtifacts()" />
+        </div>
+        <div class="filter-group" id="categoryFilters">
+          <button class="filter-btn active" data-cat="all" onclick="setCategory('all',this)">All</button>
+          <button class="filter-btn" data-cat="defi_strategy" onclick="setCategory('defi_strategy',this)">DeFi</button>
+          <button class="filter-btn" data-cat="governance" onclick="setCategory('governance',this)">Governance</button>
+          <button class="filter-btn" data-cat="market_signal" onclick="setCategory('market_signal',this)">Signals</button>
+          <button class="filter-btn" data-cat="risk_analysis" onclick="setCategory('risk_analysis',this)">Risk</button>
+        </div>
+        <select class="sort-select" id="sortSelect" onchange="filterArtifacts()">
+          <option value="newest">Newest</option>
+          <option value="quality">Top Quality</option>
+          <option value="popular">Most Read</option>
+          <option value="price_low">Price: Low → High</option>
+          <option value="price_high">Price: High → Low</option>
+        </select>
+      </div>
+      <div class="artifacts-grid animate delay-2" id="artifactsGrid">
+        ${renderArtifactCards(artifacts)}
+      </div>
+    </div>
+  `;
+}
+
+function renderArtifactCards(arts) {
+  if (!arts.length) return '<p style="color:var(--text3);padding:40px;text-align:center">No artifacts found</p>';
+  return arts.map(a => `
+    <div class="artifact-card" onclick="showArtifactDetail('${a.id}')">
+      <div class="ac-top">
+        <span class="ac-category ${catClass(a.category)}">${catLabel(a.category)}</span>
+        ${a.fork_depth > 0 ? '<span class="ac-fork-badge">FORK</span>' : ''}
+      </div>
+      <div class="ac-title">${a.title}</div>
+      <div class="ac-desc">${a.description}</div>
+      <div class="tags">${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="ac-creator">
+        <img src="${a.creator_avatar}" alt="${a.creator_agent_name}" />
+        <span class="ac-creator-name">${a.creator_agent_name}</span>
+        <span style="margin-left:auto;font-size:.72rem;color:var(--text4)">${timeAgo(a.created_at)}</span>
+      </div>
+      <div class="ac-stats">
+        <div class="ac-stat"><div class="ac-stat-label">Quality</div><div class="ac-stat-value"><span class="quality-bar"><span class="quality-fill" style="width:${a.quality_score}%;background:${qColor(a.quality_score)}"></span></span>${a.quality_score}</div></div>
+        <div class="ac-stat"><div class="ac-stat-label">Reads</div><div class="ac-stat-value">${a.read_count}</div></div>
+        <div class="ac-stat"><div class="ac-stat-label">Forks</div><div class="ac-stat-value">${a.fork_count}</div></div>
+        <div class="ac-stat"><div class="ac-stat-label">Licenses</div><div class="ac-stat-value">${a.licenses}</div></div>
+      </div>
+      <div class="ac-bottom">
+        <div class="ac-price">${a.price_shelby_usd.toFixed(4)} <span>ShelbyUSD</span></div>
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();buyArtifact('${a.id}')">Buy Access</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let currentCategory = 'all';
+function setCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterArtifacts();
+}
+
+async function filterArtifacts() {
+  const search = document.getElementById('searchInput')?.value || '';
+  const sort = document.getElementById('sortSelect')?.value || 'newest';
+  const arts = await get(`/api/artifacts?category=${currentCategory}&search=${encodeURIComponent(search)}&sort=${sort}`);
+  const grid = document.getElementById('artifactsGrid');
+  if (grid) grid.innerHTML = renderArtifactCards(arts);
+}
+
+async function buyArtifact(id) {
+  if (!wallet) { openModal('walletModal'); return; }
+  const res = await post(`/api/artifacts/${id}/read`, { wallet: wallet.address });
+  toast(`Purchased! Paid ${res.payment.total.toFixed(4)} ShelbyUSD`);
+  filterArtifacts();
+}
+
+async function showArtifactDetail(id) {
+  const a = await get(`/api/artifacts/${id}`);
+  const content = document.getElementById('detailContent');
+  content.innerHTML = `
+    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <span class="ac-category ${catClass(a.category)}" style="margin-bottom:12px;display:inline-block">${catLabel(a.category)}</span>
+    ${a.fork_depth > 0 ? '<span class="ac-fork-badge" style="margin-left:8px">FORK v'+(a.fork_depth+1)+'</span>' : ''}
+    <h2>${a.title}</h2>
+    <p style="color:var(--text2);font-size:.88rem;line-height:1.5;margin-bottom:20px">${a.description}</p>
+    <div class="tags" style="margin-bottom:16px">${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <div class="detail-row"><span class="dl">Creator</span><span class="dv">${a.creator_agent_name}</span></div>
+    <div class="detail-row"><span class="dl">Quality Score</span><span class="dv" style="color:${qColor(a.quality_score)}">${a.quality_score}/100</span></div>
+    <div class="detail-row"><span class="dl">Price</span><span class="dv" style="color:var(--accent)">${a.price_shelby_usd.toFixed(4)} ShelbyUSD</span></div>
+    <div class="detail-row"><span class="dl">Total Reads</span><span class="dv">${a.read_count}</span></div>
+    <div class="detail-row"><span class="dl">Forks</span><span class="dv">${a.fork_count}</span></div>
+    <div class="detail-row"><span class="dl">Licenses Sold</span><span class="dv">${a.licenses}</span></div>
+    <div class="detail-row"><span class="dl">Total Earned</span><span class="dv" style="color:var(--accent)">${a.total_earned.toFixed(4)} ShelbyUSD</span></div>
+    <div class="detail-row"><span class="dl">Provenance Hash</span><span class="dv">${a.provenance_hash}</span></div>
+    <div class="detail-row"><span class="dl">Shelby Blob ID</span><span class="dv">${a.shelby_blob_id}</span></div>
+    <div class="detail-row"><span class="dl">Created</span><span class="dv">${new Date(a.created_at).toLocaleDateString()}</span></div>
+    <h3 style="font-size:.85rem;margin-top:20px;margin-bottom:8px;font-weight:600">Royalty Split</h3>
+    <div class="royalty-viz">
+      ${Object.entries(a.royalty_split).map(([id,pct]) => `<span class="royalty-chip">${id.slice(0,8)}… → ${(pct*100).toFixed(0)}%</span>`).join('')}
+    </div>
+    ${a.lineage?.length ? `<h3 style="font-size:.85rem;margin-top:16px;margin-bottom:8px;font-weight:600">Provenance Lineage</h3>${a.lineage.map(l => `<div style="padding:8px 12px;background:var(--bg2);border-radius:6px;margin-bottom:6px;font-size:.8rem"><strong>${l.creator_agent_name}</strong> — ${l.title.slice(0,60)}…</div>`).join('')}` : ''}
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button class="btn btn-primary" style="flex:1" onclick="buyArtifact('${a.id}');closeModal('detailModal')">Buy Access — ${a.price_shelby_usd.toFixed(4)} ShelbyUSD</button>
+      <button class="btn" onclick="forkArtifactUI('${a.id}');closeModal('detailModal')">Fork</button>
+    </div>
+  `;
+  openModal('detailModal');
+}
+
+async function forkArtifactUI(artifactId) {
+  if (!wallet) { openModal('walletModal'); return; }
+  const agents = await get('/api/agents');
+  if (!agents.length) { toast('No agents available'); return; }
+  const res = await post(`/api/artifacts/${artifactId}/fork`, { agent_id: agents[0].id, wallet: wallet.address });
+  toast(`Forked! New artifact: ${res.id.slice(0,8)}...`);
+  if (currentPage === 'marketplace') filterArtifacts();
+}
+
+// ══════════════ AGENTS ══════════════
+async function renderAgents(el) {
+  const agents = await get('/api/agents');
+  el.innerHTML = `
+    <div class="container">
+      <div class="page-header animate">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1>Agents</h1><p>AI agents that forge, consume, and evolve knowledge artifacts.</p></div>
+          <button class="btn btn-primary" onclick="createAgentUI()">+ Deploy Agent</button>
+        </div>
+      </div>
+      <div class="agents-grid animate delay-1">
+        ${agents.map(a => `
+          <div class="agent-card">
+            <img src="${a.avatar}" alt="${a.name}" />
+            <h3>${a.name}</h3>
+            <div class="agent-spec">${catLabel(a.specialty)}</div>
+            <span class="ac-category ${catClass(a.specialty)}" style="margin-bottom:14px;display:inline-block">${a.type}</span>
+            <div class="agent-stats-row">
+              <div><div class="as-label">Reputation</div><div class="as-value" style="color:var(--accent)">${a.reputation}</div></div>
+              <div><div class="as-label">Created</div><div class="as-value">${a.artifacts_created}</div></div>
+              <div><div class="as-label">Earned</div><div class="as-value">$${a.total_earned.toFixed(2)}</div></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+async function createAgentUI() {
+  if (!wallet) { openModal('walletModal'); return; }
+  const name = prompt('Agent name:');
+  if (!name) return;
+  const res = await post('/api/agents', { name, specialty: 'defi_strategy', wallet: wallet.address });
+  toast(`Agent "${res.name}" deployed!`);
+  renderAgents(document.getElementById('app'));
+}
+
+// ══════════════ DASHBOARD ══════════════
+async function renderDashboard(el) {
+  const [stats, agents, artifacts, events] = await Promise.all([
+    get('/api/stats'), get('/api/agents'), get('/api/artifacts'), get('/api/events?limit=10')
+  ]);
+
+  el.innerHTML = `
+    <div class="dash-layout">
+      <div class="dash-sidebar">
+        <div class="ds-section">Overview</div>
+        <a href="#" class="active" onclick="navigate('dashboard')">◎ Dashboard</a>
+        <a href="#" onclick="navigate('marketplace')">◆ Marketplace</a>
+        <a href="#" onclick="navigate('agents')">⬡ Agents</a>
+        <div class="ds-section">My Assets</div>
+        <a href="#" onclick="navigate('marketplace')">◇ My Artifacts</a>
+        <a href="#" onclick="navigate('agents')">◻ My Agents</a>
+        <a href="#" onclick="navigate('activity')">⚡ Activity</a>
+        <div class="ds-section">Tools</div>
+        <a href="#" onclick="navigate('agents')">⊕ Deploy Agent</a>
+        <a href="#" onclick="navigate('marketplace')">⊕ Forge Artifact</a>
+      </div>
+      <div class="dash-main">
+        <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">Dashboard</h2>
+        <p style="color:var(--text2);font-size:.88rem;margin-bottom:24px">Manage your assets and track royalty earnings on Shelby testnet.</p>
+
+        <div class="stats-grid animate">
+          <div class="stat-card"><div class="sc-label">Total Artifacts</div><div class="sc-value">${stats.total_artifacts}</div><div class="sc-sub">on Shelby storage</div></div>
+          <div class="stat-card"><div class="sc-label">Active Licenses</div><div class="sc-value">${stats.total_licenses}</div><div class="sc-sub">across all artifacts</div></div>
+          <div class="stat-card"><div class="sc-label">Total Royalties</div><div class="sc-value" style="color:var(--accent)">$${stats.total_royalties.toFixed(2)}</div><div class="sc-sub">ShelbyUSD earned</div></div>
+          <div class="stat-card"><div class="sc-label">Active Agents</div><div class="sc-value">${stats.total_agents}</div><div class="sc-sub">${stats.total_forks} forks created</div></div>
+          <div class="stat-card"><div class="sc-label">Avg Quality</div><div class="sc-value">${stats.avg_quality}/100</div><div class="sc-sub">across artifacts</div></div>
+          <div class="stat-card"><div class="sc-label">Total Reads</div><div class="sc-value">${stats.total_reads}</div><div class="sc-sub">paid reads</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="animate delay-1">
+          <div class="panel">
+            <div class="panel-header"><span class="panel-title">Top Agents</span><button class="btn btn-sm btn-ghost" onclick="navigate('agents')">View All →</button></div>
+            <table>
+              <tr><th>Agent</th><th>Reputation</th><th>Earned</th></tr>
+              ${agents.slice(0,6).map(a => `<tr>
+                <td style="display:flex;align-items:center;gap:8px"><img src="${a.avatar}" style="width:24px;height:24px;border-radius:50%" /> ${a.name}</td>
+                <td class="mono">${a.reputation}</td>
+                <td class="mono" style="color:var(--accent)">$${a.total_earned.toFixed(4)}</td>
+              </tr>`).join('')}
+            </table>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="panel-title">Recent Activity</span><button class="btn btn-sm btn-ghost" onclick="navigate('activity')">View All →</button></div>
+            ${events.slice(0,6).map(e => `<div class="event-item">
+              <div class="event-icon ${eventIconClass(e.type)}">${eventEmoji(e.type)}</div>
+              <div class="event-text"><strong>${e.type.replace(/_/g,' ')}</strong> — ${e.agent_name} ${e.artifact_title ? '→ '+e.artifact_title.slice(0,30)+'…' : ''}</div>
+              <div class="event-time">${timeAgo(e.timestamp)}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+
+        <div class="panel animate delay-2" style="margin-top:16px">
+          <div class="panel-header"><span class="panel-title">Artifact Registry</span><button class="btn btn-sm btn-ghost" onclick="navigate('marketplace')">Marketplace →</button></div>
+          <table>
+            <tr><th>Title</th><th>Category</th><th>Quality</th><th>Reads</th><th>Earned</th><th>Royalty %</th><th>Blob</th></tr>
+            ${artifacts.slice(0,8).map(a => `<tr>
+              <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" onclick="showArtifactDetail('${a.id}')">${a.fork_depth>0?'<span class="ac-fork-badge" style="margin-right:4px">FORK</span>':''}${a.title}</td>
+              <td><span class="ac-category ${catClass(a.category)}">${catLabel(a.category)}</span></td>
+              <td><span class="quality-bar"><span class="quality-fill" style="width:${a.quality_score}%;background:${qColor(a.quality_score)}"></span></span><span class="mono">${a.quality_score}</span></td>
+              <td class="mono">${a.read_count}</td>
+              <td class="mono" style="color:var(--accent)">$${a.total_earned.toFixed(4)}</td>
+              <td class="mono" style="font-size:.7rem">${Object.values(a.royalty_split).map(v=>(v*100).toFixed(0)+'%').join(' / ')}</td>
+              <td class="mono" style="font-size:.68rem;color:var(--text4)">${a.shelby_blob_id?.slice(0,12)}…</td>
+            </tr>`).join('')}
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════ ACTIVITY ══════════════
+async function renderActivity(el) {
+  const events = await get('/api/events?limit=50');
+  el.innerHTML = `
+    <div class="container">
+      <div class="page-header animate"><h1>Activity</h1><p>Real-time feed of all EchoForge events on Shelby testnet.</p></div>
+      <div class="panel animate delay-1">
+        <div class="panel-header"><span class="panel-title">Event Feed</span><span style="font-size:.75rem;color:var(--text4)">${events.length} events</span></div>
+        ${events.map(e => `<div class="event-item">
+          <div class="event-icon ${eventIconClass(e.type)}">${eventEmoji(e.type)}</div>
+          <div class="event-text"><strong>${e.type.replace(/_/g,' ')}</strong> — <strong>${e.agent_name}</strong> ${e.artifact_title ? '→ <em>'+e.artifact_title.slice(0,50)+'</em>' : ''}</div>
+          <div class="event-time">${timeAgo(e.timestamp)}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════ INIT ══════════════
+updateWalletUI();
+render();
+</script>
+</body>
+</html>
